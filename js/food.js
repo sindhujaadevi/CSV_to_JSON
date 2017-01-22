@@ -13,6 +13,33 @@ readfile.on('end', function() {
   let saltIndex = head.indexOf('salt_100g');
   let sugarIndex = head.indexOf('sugars_100g');
 
-  console.log(countryIndex + '/' + saltIndex + '/' + sugarIndex); //33/116/102
-  //fs.writeFile('../outputdata/header.json', JSON.stringify(head), 'utf-8');
+  let allContent = [];
+  var saltcontent=new Array(9).fill(0);
+  var sugarcontent=new Array(9).fill(0);
+  for(var i=1; i<line.length; i++)
+  {
+    let content = line[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    allContent.push(content);
+    var flag1 = countries.includes(content[countryIndex]);
+    if(flag1===true){
+      let index = countries.indexOf(content[countryIndex]);
+      let saltvalue = content[saltIndex];
+      let sugarvalue = content[sugarIndex];
+      if(saltvalue=="")
+      saltvalue=0;
+      if(sugarvalue=="")
+      sugarvalue=0;
+      saltcontent[index] = saltcontent[index] + parseFloat(saltvalue);
+      sugarcontent[index] = sugarcontent[index] + parseFloat(sugarvalue);
+    }
+  }
+  for(var j=0; j<countries.length; j++){
+    let obj = {};
+    obj["country"] = countries[j];
+    obj["salt"] = saltcontent[j];
+    obj["sugar"] = sugarcontent[j];
+    allContent.push(obj);
+      console.log(allContent);
+  }
+  fs.writeFile('../outputdata/all1.json',JSON.stringify(allContent),'utf-8');
 });
