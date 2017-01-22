@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JS Boilerplate Code
 
 ## Supports
@@ -28,3 +29,6 @@ To build the app
 To run the app
 
 	$ npm run execute
+=======
+# CSV_to_JSON
+>>>>>>> 91a6bc2a5c593800c9f3bf36a2b37be24dd8361a
