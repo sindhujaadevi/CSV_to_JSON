@@ -1,45 +1,48 @@
 let fs = require('fs');
 let readfile = fs.createReadStream('../inputdata/FoodFacts.csv', 'utf-8');
 data = '';
-readfile.on('data', function(chunk) {
+readfile.on('data', function(chunk){
   data = data + chunk;
 });
-readfile.on('end', function() {
+readfile.on('end', function(){
   let line = data.split('\n');
   let head = line[0].split(',');
+  let allContent = [];
+  let saltcontent = new Array(9).fill(0);
+  let sugarcontent = new Array(9).fill(0);
 
   let countries = ['Netherlands', 'Canada', 'United Kingdom', 'United States', 'Australia', 'France', 'Germany', 'Spain', 'South Africa'];
   let countryIndex = head.indexOf('countries_en');
   let saltIndex = head.indexOf('salt_100g');
   let sugarIndex = head.indexOf('sugars_100g');
 
-  let allContent = [];
-  var saltcontent=new Array(9).fill(0);
-  var sugarcontent=new Array(9).fill(0);
-  for(var i=1; i<line.length; i++)
+  for(let i = 1; i<line.length; i++)
   {
     let content = line[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    allContent.push(content);
-    var flag1 = countries.includes(content[countryIndex]);
-    if(flag1===true){
+    //allContent.push(content);
+    let flag1 = countries.includes(content[countryIndex]);
+    if(flag1){
       let index = countries.indexOf(content[countryIndex]);
       let saltvalue = content[saltIndex];
       let sugarvalue = content[sugarIndex];
-      if(saltvalue=="")
-      saltvalue=0;
-      if(sugarvalue=="")
-      sugarvalue=0;
-      saltcontent[index] = saltcontent[index] + parseFloat(saltvalue);
-      sugarcontent[index] = sugarcontent[index] + parseFloat(sugarvalue);
+
+if(saltvalue == '')
+saltvalue = 0;
+
+if(sugarvalue == '')
+sugarvalue = 0;
+
+saltcontent[index] = saltcontent[index] + parseFloat(saltvalue);
+sugarcontent[index] = sugarcontent[index] + parseFloat(sugarvalue);
     }
   }
-  for(var j=0; j<countries.length; j++){
+  for(let j=0; j<countries.length; j++){
     let obj = {};
-    obj["country"] = countries[j];
-    obj["salt"] = saltcontent[j];
-    obj["sugar"] = sugarcontent[j];
+    obj['country'] = countries[j];
+    obj['salt'] = saltcontent[j];
+    obj['sugar'] = sugarcontent[j];
     allContent.push(obj);
-      console.log(allContent);
+    console.log(allContent);
   }
-  fs.writeFile('../outputdata/all1.json',JSON.stringify(allContent),'utf-8');
+  fs.writeFile('../outputdata/part1.json',JSON.stringify(allContent), 'utf-8');
 });
